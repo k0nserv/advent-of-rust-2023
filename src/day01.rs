@@ -1,7 +1,8 @@
-use std::collections::HashMap;
-
 const DIGITS: [&str; 9] = [
     "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
+];
+const REVERSE_DIGITS: [&str; 9] = [
+    "eno", "owt", "eerht", "ruof", "evif", "xis", "neves", "thgie", "enin",
 ];
 
 pub fn star_one(input: &str) -> u32 {
@@ -26,27 +27,16 @@ pub fn star_one(input: &str) -> u32 {
 }
 
 pub fn star_two(input: &str) -> u32 {
-    let mappings: HashMap<_, _> = DIGITS
-        .iter()
-        .enumerate()
-        .map(|(idx, d)| (d.to_string(), (idx + 1) as u32))
-        .collect();
-    let reverse_mappings: HashMap<_, _> = DIGITS
-        .iter()
-        .enumerate()
-        .map(|(idx, d)| (d.chars().rev().collect::<String>(), (idx + 1) as u32))
-        .collect();
-
     input
         .lines()
         .map(str::trim)
         .filter(|l| !l.is_empty())
         .map(|l| {
             let first = (0..l.len())
-                .find_map(|i| find_digit(|| l.chars().skip(i), &mappings))
+                .find_map(|i| find_digit(|| l.chars().skip(i), &DIGITS))
                 .expect("At least one number");
             let last = (0..l.len())
-                .find_map(|i| find_digit(|| l.chars().rev().skip(i), &reverse_mappings))
+                .find_map(|i| find_digit(|| l.chars().rev().skip(i), &REVERSE_DIGITS))
                 .expect("At least one number");
 
             first * 10 + last
@@ -54,7 +44,7 @@ pub fn star_two(input: &str) -> u32 {
         .sum()
 }
 
-fn find_digit<F, I>(f: F, mappings: &HashMap<String, u32>) -> Option<u32>
+fn find_digit<F, I>(f: F, mappings: &[&str]) -> Option<u32>
 where
     F: Fn() -> I,
     I: Iterator<Item = char>,
@@ -64,10 +54,10 @@ where
         return Some(d);
     }
 
-    for (d, v) in mappings.iter() {
+    for (idx, d) in mappings.iter().enumerate() {
         let i = f();
         if d.chars().zip(i).all(|(a, b)| a == b) {
-            return Some(*v);
+            return Some(idx as u32 + 1);
         }
     }
 
