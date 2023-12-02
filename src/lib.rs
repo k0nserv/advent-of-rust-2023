@@ -3,7 +3,6 @@ use std::io::Read;
 use std::str::FromStr;
 use std::time::{SystemTime, UNIX_EPOCH};
 
-#[allow(dead_code, unused_imports)]
 mod day01;
 mod day02;
 mod day03;
