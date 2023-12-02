@@ -63,14 +63,14 @@ impl FromStr for Game {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let parts = s
             .split_once(':')
-            .ok_or_else(|| anyhow!("Game should contain a `:`"))?;
+            .ok_or_else(|| anyhow!("Game missing `:`"))?;
 
         let id = parts
             .0
             .split_whitespace()
             .next_back()
-            .ok_or_else(|| anyhow!("Game should contain an ID"))
-            .and_then(|s| s.parse().context("Game ID should be parsable"))?;
+            .ok_or_else(|| anyhow!("Game missing ID"))
+            .and_then(|s| s.parse().context("Game ID not parsable"))?;
 
         let sets = parts
             .1
@@ -94,10 +94,13 @@ impl FromStr for Set {
             let mut parts = split.split_whitespace();
             let count = parts
                 .next()
-                .expect("Draw to contain a count and color")
-                .parse()
-                .expect("Draw count to parsable");
-            let color = parts.next().expect("Draw to contain a color").trim();
+                .ok_or_else(|| anyhow!("Draw missing count"))
+                .and_then(|s| s.parse().context("Draw count not parsable"))?;
+
+            let color = parts
+                .next()
+                .map(str::trim)
+                .ok_or_else(|| anyhow!("Draw missing color"))?;
 
             match color {
                 "blue" => set.blue = count,
