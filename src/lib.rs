@@ -27,6 +27,7 @@ mod day21;
 mod day22;
 mod day23;
 mod day24;
+mod day25;
 mod math;
 
 #[derive(Debug, Copy, Clone)]
@@ -192,6 +193,26 @@ mod tests {
 
         assert_eq!(star_one(&input), 2795);
         assert_eq!(star_two(&input), 75561);
+    }
+
+    #[test]
+    fn solve_day03() {
+        use crate::day03::{star_one, star_two};
+
+        let input = load_file("day03.txt");
+
+        assert_eq!(star_one(&input), 1);
+        assert_eq!(star_two(&input), 1);
+    }
+
+    #[test]
+    fn solve_day04() {
+        use crate::day04::{star_one, star_two};
+
+        let input = load_file("day02.txt");
+
+        assert_eq!(star_one(&input), 1);
+        assert_eq!(star_two(&input), 1);
     }
 
     #[test]
@@ -389,6 +410,16 @@ mod tests {
         use crate::day24::{star_one, star_two};
 
         let input = load_file("day24.txt");
+
+        assert_eq!(star_one(&input), 1);
+        assert_eq!(star_two(&input), 1);
+    }
+
+    #[test]
+    fn solve_day25() {
+        use crate::day25::{star_one, star_two};
+
+        let input = load_file("day25.txt");
 
         assert_eq!(star_one(&input), 1);
         assert_eq!(star_two(&input), 1);
