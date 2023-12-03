@@ -29,6 +29,7 @@ mod day23;
 mod day24;
 mod day25;
 mod math;
+mod mem;
 
 #[derive(Debug, Copy, Clone)]
 pub struct DigitIterator {
