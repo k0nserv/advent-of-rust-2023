@@ -131,14 +131,14 @@ fn adjacent_parts(x: usize, y: usize, parts: &[Vec<Part>]) -> HashSet<Part> {
 /// Build a u64 from an iterator over [`char`] also return the byte range of the number within the
 /// string.
 /// **Note:** Numbers larger than 100 digits not supported
-fn to_num(mut iter: impl Iterator<Item = (usize, u32)>) -> Option<(Range<usize>, u64)> {
+fn to_num(iter: impl Iterator<Item = (usize, u32)>) -> Option<(Range<usize>, u64)> {
     // 100 digits ought to be enough
-    let mut digits = [None; 100];
+    let mut digits = [u8::MAX; 100];
     let mut i = 0;
     let mut range: Option<Range<usize>> = None;
 
     for (idx, d) in iter {
-        digits[i] = Some(d as u64);
+        digits[i] = d as u8;
         i += 1;
 
         let r = range.get_or_insert_with(|| idx..idx + 1);
@@ -148,7 +148,7 @@ fn to_num(mut iter: impl Iterator<Item = (usize, u32)>) -> Option<(Range<usize>,
     let range = range?;
 
     let number = (0..i).rev().fold(0, |acc, idx| {
-        acc + (digits[idx].unwrap() * 10_u64.pow((i as u32) - (idx as u32) - 1))
+        acc + (digits[idx] as u64 * 10_u64.pow((i as u32) - (idx as u32) - 1))
     });
 
     Some((range, number))
