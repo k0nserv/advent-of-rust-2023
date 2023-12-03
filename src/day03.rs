@@ -59,7 +59,7 @@ fn extract_parts(input: &str) -> Vec<Vec<Part>> {
                 let Some((range, number)) = to_num(
                     chars
                         .by_ref()
-                        .skip_while(|(_, c)| !c.is_digit(10))
+                        .skip_while(|(_, c)| !c.is_ascii_digit())
                         .map_while(|(idx, c)| c.to_digit(10).map(|d| (idx, d))),
                 ) else {
                     break;
@@ -83,7 +83,7 @@ fn find_symbols<'s>(input: &'s str, parts: &'s [Vec<Part>]) -> impl Iterator<Ite
 
     clean_lines.enumerate().flat_map(move |(lidx, line)| {
         line.chars().enumerate().filter_map(move |(i, c)| {
-            if c.is_digit(10) || c == '.' {
+            if c.is_ascii_digit() || c == '.' {
                 // Not a symbol
                 return None;
             }
@@ -137,26 +137,21 @@ fn to_num(mut iter: impl Iterator<Item = (usize, u32)>) -> Option<(Range<usize>,
     let mut i = 0;
     let mut range: Option<Range<usize>> = None;
 
-    while let Some((idx, d)) = iter.next() {
+    for (idx, d) in iter {
         digits[i] = Some(d as u64);
         i += 1;
 
-        if let Some(r) = &mut range {
-            range = Some(r.start..idx + 1);
-        } else {
-            range = Some(idx..idx + 1);
-        }
+        let r = range.get_or_insert_with(|| idx..idx + 1);
+        *r = r.start..idx + 1;
     }
 
-    if range.is_none() {
-        return None;
-    }
+    let range = range?;
 
     let number = (0..i).rev().fold(0, |acc, idx| {
         acc + (digits[idx].unwrap() * 10_u64.pow((i as u32) - (idx as u32) - 1))
     });
 
-    Some((range.unwrap(), number))
+    Some((range, number))
 }
 
 #[cfg(test)]
