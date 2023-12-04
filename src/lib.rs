@@ -210,10 +210,10 @@ mod tests {
     fn solve_day04() {
         use crate::day04::{star_one, star_two};
 
-        let input = load_file("day02.txt");
+        let input = load_file("day04.txt");
 
-        assert_eq!(star_one(&input), 1);
-        assert_eq!(star_two(&input), 1);
+        assert_eq!(star_one(&input), 24706);
+        assert_eq!(star_two(&input), 13114317);
     }
 
     #[test]
