@@ -168,6 +168,8 @@ mod tests {
     use std::fs::File;
     use std::io::Read;
 
+    use anyhow::Result;
+
     fn load_file(path: &str) -> String {
         let mut input = String::new();
         let mut f = File::open(path).expect("Unable to open file");
@@ -217,13 +219,15 @@ mod tests {
     }
 
     #[test]
-    fn solve_day05() {
+    fn solve_day05() -> Result<()> {
         use crate::day05::{star_one, star_two};
 
         let input = load_file("day05.txt");
 
-        assert_eq!(star_one(&input), 1);
-        assert_eq!(star_two(&input), 1);
+        assert_eq!(star_one(&input)?, 389056265);
+        assert_eq!(star_two(&input)?, 137516820);
+
+        Ok(())
     }
 
     #[test]
