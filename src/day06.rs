@@ -4,14 +4,6 @@ use std::str::FromStr;
 use anyhow::{anyhow, Context, Result};
 use either::Either;
 
-// f(x) =  x * (C - x) => f(x) = Cx - x^2
-// f'(x) = 7 - 2x
-//
-// f'(x) = 0 =>
-//  0 = 7 - 2x
-//  (7 / -2) = -x
-//  (7 / 2) = x
-//  C / 2 = x
 pub fn star_one(input: &str) -> Result<u64> {
     solve::<BadKern>(input)
 }
@@ -26,12 +18,27 @@ fn solve<K: Kerning>(input: &str) -> Result<u64> {
     Ok(document
         .races
         .iter()
-        .map(|r| {
-            (0..r.time)
-                .filter(|t| t * r.time - t.pow(2) > r.distance)
-                .count() as u64
-        })
+        .map(|r| high(r.time, r.distance + 1) - low(r.time, r.distance + 1) + 1)
         .product())
+}
+
+// Solve Tx-x^2 = D
+// Where T=time, D=duration
+
+/// Compute low root
+fn low(time: u64, distance: u64) -> u64 {
+    let c = time as f64;
+    let y = distance as f64;
+
+    (1.0 / 2.0 * (c - (c.powf(2.0) - 4.0 * y).sqrt())).ceil() as u64
+}
+
+/// Compute high root
+fn high(time: u64, distance: u64) -> u64 {
+    let c = time as f64;
+    let y = distance as f64;
+
+    (1.0 / 2.0 * ((c.powf(2.0) - 4.0 * y).sqrt() + c)).floor() as u64
 }
 
 trait Kerning {
