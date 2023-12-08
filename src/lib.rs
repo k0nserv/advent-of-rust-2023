@@ -253,13 +253,15 @@ mod tests {
     }
 
     #[test]
-    fn solve_day08() {
+    fn solve_day08() -> Result<()> {
         use crate::day08::{star_one, star_two};
 
         let input = load_file("day08.txt");
 
-        assert_eq!(star_one(&input), 1);
-        assert_eq!(star_two(&input), 1);
+        assert_eq!(star_one(&input)?, 13207);
+        assert_eq!(star_two(&input)?, 12324145107121);
+
+        Ok(())
     }
 
     #[test]
