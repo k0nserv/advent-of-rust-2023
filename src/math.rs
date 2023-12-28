@@ -2,10 +2,10 @@ use std::fmt;
 use std::hash::Hash;
 use std::ops::{Add, Neg, Sub};
 
-#[derive(Copy, Clone, Hash, PartialEq, Eq)]
+#[derive(Copy, Clone, Hash, PartialEq, Eq, Ord, PartialOrd)]
 pub struct Vector2<T> {
-    pub x: T,
     pub y: T,
+    pub x: T,
 }
 
 impl<T> Vector2<T> {
