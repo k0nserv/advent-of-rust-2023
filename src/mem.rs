@@ -1,17 +1,53 @@
+use std::fmt;
 use std::ops::{Index, IndexMut};
 
-struct Arena<T> {
+pub struct Arena<T> {
     storage: Vec<T>,
 }
 
-#[derive(Clone, Copy)]
-struct Idx(usize);
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct Idx(usize);
 
 impl<T> Arena<T> {
+    pub fn with_capacity(capacity: usize) -> Self {
+        Self {
+            storage: Vec::with_capacity(capacity),
+        }
+    }
+
     pub fn insert(&mut self, value: T) -> Idx {
+        let idx = self.storage.len();
         self.storage.push(value);
 
-        Idx(self.storage.len())
+        Idx(idx)
+    }
+
+    pub fn storage(&self) -> &[T] {
+        &self.storage
+    }
+
+    pub fn all_items(&self) -> impl Iterator<Item = (Idx, &T)> {
+        self.storage.iter().enumerate().map(|(i, t)| (Idx(i), t))
+    }
+}
+
+impl<T> Default for Arena<T> {
+    fn default() -> Self {
+        Self { storage: vec![] }
+    }
+}
+
+impl<T> fmt::Debug for Arena<T> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("Arena")
+            .field("storage_len", &self.storage.len())
+            .finish()
+    }
+}
+
+impl fmt::Display for Idx {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", self.0)
     }
 }
 
